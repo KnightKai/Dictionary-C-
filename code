@@ -1,0 +1,146 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <unordered_map>
+#include <algorithm>
+#include <fstream>
+using namespace std;
+
+
+class TrieNode{
+public:
+    vector<TrieNode*> next = vector<TrieNode*>(26,NULL);
+    bool isword;
+    string meaning;
+    TrieNode(){
+        this->isword = false;
+        this->meaning= "";
+    }
+    ~TrieNode(){
+    }
+};
+
+
+
+class TrieSearch {
+    
+private:
+TrieNode* root;
+    
+public:
+TrieSearch() {
+    root = new TrieNode();
+}
+    
+    
+void add(string word,string mean){
+    TrieNode* p = root;
+    for(char t: word){
+        if(p->next[t-'a']== NULL){
+            p->next[t-'a'] = new TrieNode();
+        }
+        p=p->next[t-'a'];
+            
+    }
+    p->isword = true;
+    p->meaning = mean;
+}
+    
+string contain(string word){
+    TrieNode* p = root;
+
+    for(char t: word){
+        if(p->next[t-'a'] == NULL){
+            cout << "no such word!" << endl;
+        }
+        p = p->next[t-'a'];
+    }
+    return p->meaning;
+        
+}
+    
+void generalSearch(string w, vector <string>& a){
+        
+    TrieNode* p = root;
+    for(char t: w){
+        p = p->next[t-'a'];
+    }
+    
+    helper(p,a);
+}
+    
+void helper(TrieNode* root, vector <string>& res){
+        if(root == NULL) return;
+        if(root->isword == true) res.push_back(root->meaning);
+        for(TrieNode* t: root->next){
+            helper(t, res);
+        }
+    }
+    
+
+void output(string s){
+    vector<string> exist;
+    if(containPrefix(s)){
+        generalSearch(s, exist);
+    }
+    cout << exist.size() << endl;
+    for(int i=0; i<5 && i< exist.size(); i++){
+        cout << exist[i] << endl;
+    }
+        
+}
+
+bool containPrefix(string subword)
+    {
+        TrieNode* p = root;
+        for(char t: subword)
+        {
+            if(p->next[t-'a'] == NULL)
+                return false;
+            p = p->next[t-'a'];
+        }
+        return true;
+    }
+    
+};
+
+
+
+
+
+int main(int argc, const char * argv[]) {
+    
+    
+    TrieSearch mytrie = *new TrieSearch();
+    
+    vector<string> re;
+
+    ifstream infile("/Users/kaikang/Desktop/dictionary.txt");
+    if (infile.fail())
+    {
+        cout << "Input file \"input.txt\" opening failed" << endl;
+        return 1;
+    }
+    string meaning;
+    while(getline(infile,meaning)){
+        
+        string word;
+        
+        int index=0;
+        while(meaning[index]!=' '){
+            word += meaning[index];
+            index++;
+        }
+        cout << meaning << endl;
+        mytrie.add(word,meaning);
+    
+    
+    
+    }
+    cout <<"enter the word:" << endl;
+    string input;
+    cin >> input;
+    mytrie.output(input);
+    
+
+}
