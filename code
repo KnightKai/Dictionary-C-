@@ -1,3 +1,10 @@
+// This is a project I have made. 
+// Using data struct Trie to build the dictionary and can do exactly search or 
+// search the prefix of a word. And the result will return 5 words begin with
+// the prefix ordered by alphabet.
+// I suppose this code can show the data structure and algrithem I have learnt.
+
+
 #include <iostream>
 #include <vector>
 #include <queue>
